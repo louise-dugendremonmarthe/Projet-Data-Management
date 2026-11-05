@@ -5,3 +5,21 @@ format: html
 editor: visual
 ---
 
+```{r}
+library(vroom)
+library(here)
+library(readxl)
+```
+
+```{r}
+comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
+```
+
+```{r}
+
+```
+
+```{r}
+résultats_votes <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
+```
+
