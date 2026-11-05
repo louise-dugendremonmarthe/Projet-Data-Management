@@ -9,6 +9,8 @@ editor: visual
 library(vroom)
 library(here)
 library(readxl)
+library(dplyr)
+library(sf)
 ```
 
 ```{r}
@@ -23,3 +25,18 @@ comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 résultats_votes <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
 ```
 
+
+## Nettoyage de la base Open street map
+```{r}
+restos_brut <- st_read(here("restaurant.geojson"))
+
+restos <- restos_brut |> 
+  select(`name`,`amenity`,`cuisine`,`diet.vegan`,`diet.vegetarian`,`geometry`)
+```
+
+## Nettoyage de la bases des contours administratifs
+```{r}
+communes_brut <- st_read(here("contours_communes.geojson"))
+communes <- communes_brut |> 
+  select(`nom`,`geometry`)
+```
