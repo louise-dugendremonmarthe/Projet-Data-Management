@@ -1,6 +1,6 @@
 ---
 title: "Data Management"
-author: "Coline & Louise"
+author: "Coline Court & Louise Dugendre Monmarthe"
 format: html
 editor: visual
 ---
@@ -15,7 +15,23 @@ library(dplyr)
 library(sf)
 ```
 
+# Sujet
 
+L’offre de restauration végétarienne et végane dépend-elle du profil socio-démographique et politique des communes françaises ?
+
+Les régimes végétarien et végan sont devenus un sujet de société de plus en plus visible en France. Cette progression est liée à des préoccupations de bien-être animal, de santé et d’empreinte environnementale.
+
+Un régime végétarien exclut la viande et le poisson mais autorise les produits d’origine animale comme les œufs, le lait ou le fromage. Le régime végan (ou végétalien) exclut tous les produits d’origine animale.
+
+En France, en 2020, selon l’Ifop 2,2 % des Français suivaient un régime sans viande. En 2024, une étude d’Arcane Research comptait 5 % de végétariens, végétaliens et végans. Ces enquêtes n’utilisent pas les mêmes questions et ne se comparent pas directement, mais sur le long terme la hausse est nette : les végétariens représentaient 0,7 % des Français en 1998, contre environ 5 %. Ce sont surtout les jeunes qui sont concernés, en 2018, 12 % des 18-23 ans se déclaraient végétariens, contre 2 % des plus de 55 ans. C’est un mouvement concernant plutôt les nouvelles générations. On le voit aussi dans le quotidien des jeunes, depuis 2017, les restaurants universitaires proposent chaque jour un menu végétarien. 
+
+À l’heure actuelle, à notre connaissance, aucune base de données ne mesure combien de personnes suivent ces régimes à l’échelle locale. Plutôt que la consommation, nous étudions donc l’offre de restauration. De plus en plus de restaurants proposent des alternatives végétariennes ou véganes, et on observe aussi un essor des restaurants 100 % végé/végans depuis quelques années. Leur localisation renseigne sur où se trouve la demande. Cette demande serait potentiellement corrélée à une ouverture culturelle, à un mode de vie et à d’autres caractéristiques socio-démographiques. Ce sont ces corrélations que nous allons étudier.
+
+Notre analyse portera sur la France entière. Après analyse et nettoyage des bases de données, nous excluons les communes de moins de … d’habitants, où l’offre de restauration est très limitée. Nous aurons ainsi quelques milliers de communes. Nous distinguerons les restaurants proposant des alternatives végétariennes ou véganes, qui reflètent une adoption large dans la restauration, des restaurants 100 % végé/végans, qui eux font partie d’un segment de niche.
+
+Nous étudierons deux groupes de facteurs. D’abord, les facteurs socio-démographiques et économiques, tels que l’âge, le niveau de diplôme, la part d’étudiants, la taille de la population… En effet, nous supposons que les grandes villes, avec une population jeune, diplômée et aisée, possèdent une offre plus large qu’une commune rurale avec une population plus âgée.
+
+Ensuite, nous nous intéresserons aux facteurs politiques, avec les résultats électoraux de chaque commune. Nous nous attendons à ce qu’une commune où le vote écologiste ou de gauche est plus élevé ait une offre plus importante, car cette population serait potentiellement plus sensible aux questions environnementales et donc potentiellement plus ouverte à ces régimes alimentaires.
 
 # Lien vers le projet github
 
@@ -61,6 +77,8 @@ Les varibles les plus interessantes sont :
 - les coordonnées géographiques des restaurants pour pouvoir l'associer à leur commune
 - la variable `Vegetarien` qui indique "yes" s'il y a des alternatives vegetariennes ou "only" si le restaurant est 100% vegetarien
 - la variable `Vegan` qui indique "yes" s'il y a des alternatives vegans ou "only" si le restaurant est 100% vegan. Cette variable contient souvent beucoup de "NA" pour les restaurants qui ont rempli la varible vegetarien mais pas la vegan. 
+
+Ces 2 dernières varaibles nous permettrons de faire des comparaison entre les restaurants 100% vegetariens/vegan et ceux qui proposent seulement des alternatives.
 
 ## Contours administratifs
 
