@@ -6,12 +6,84 @@ editor: visual
 ---
 
 ```{r}
+#| echo: false
+#| message: false
 library(vroom)
 library(here)
 library(readxl)
 library(dplyr)
 library(sf)
 ```
+
+
+
+# Lien vers le projet github
+
+# Descriptions des sources
+
+Mettre lien des sources et description (Louise)
+
+## Open street Map
+
+Nous avons utiliser le code suivant sur overpass turbo pour extraire les données : \[out:json\]\[timeout:300\]\[maxsize:2147483648\]; area\["ISO3166-1"="FR"\]\[admin_level=2\]-\>.fr; ( nwr["diet:vegan"~"\^(yes\|only)\$"\]\["amenity"~"\^(restaurant\|fast_food\|cafe)\$"](area.fr); nwr["diet:vegetarian"~"\^(yes\|only)\$"\]\["amenity"~"\^(restaurant\|fast_food\|cafe)\$"](area.fr); nwr\["cuisine"\~"vegan\|vegetarian"\]\["amenity"\~"\^(restaurant\|fast_food\|cafe)\$"\](area.fr); ); out center tags;
+
+## Source 2
+
+## Source 3
+
+## Source 4
+
+# Importation, nettoyage et description des données
+
+## Open Street Map
+
+```{r}
+#| output: false
+restos_brut <- st_read(here("restaurant.geojson"))
+
+restos <- restos_brut |> 
+  select(`name`,`amenity`,`cuisine`,`diet.vegan`,`diet.vegetarian`,`geometry`)
+
+restos <- restos |> 
+  rename(Nom=`name`, "Type des restaurants"=`amenity`, Cuisine=`cuisine`,Vegan = `diet.vegan`, Vegetarien=`diet.vegetarian`, Coordonnées=`geometry`)
+```
+
+Les données extraites avec overpass turbo, nous donne une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous avons donc seulement gardé les colonnes concernant le nom du restaurant, le type de cuisine, l'information sur le régimes alimentaires : vegetarien ou vegan et les coordonnées géographiques du restaurant.
+
+|                                     |                           |
+|-------------------------------------|---------------------------|
+| Nombre de restaurants               | `{r} nrow(restos_brut)`   |
+| Nombre de variables avant nettoyage | `{r} ncol(restos_brut)` |
+| Nombre de variables après nettoyage  | `{r} ncol(restos)`      |
+
+Les varibles les plus interessantes sont : 
+
+- les coordonnées géographiques des restaurants pour pouvoir l'associer à leur commune
+- la variable `Vegetarien` qui indique "yes" s'il y a des alternatives vegetariennes ou "only" si le restaurant est 100% vegetarien
+- la variable `Vegan` qui indique "yes" s'il y a des alternatives vegans ou "only" si le restaurant est 100% vegan. Cette variable contient souvent beucoup de "NA" pour les restaurants qui ont rempli la varible vegetarien mais pas la vegan. 
+
+## Contours administratifs
+
+```{r}
+#| output: false
+communes_brut <- st_read(here("contours_communes.geojson"))
+communes <- communes_brut |> 
+  select(`nom`,`geometry`)
+
+communes <- communes |> 
+  rename(Commune=`nom`, Coordonnées=`geometry`)
+```
+
+Nous avons seulement gardé les colonnes contenant le nom de communes et les coordonnées géographique des contours de chaque commune.
+
+|                       |           |
+|-----------------------|----------------------|
+| Nombre d'observations | `{r} nrow(communes)` |
+| Nombre de colonnes    | `{r} ncol(communes)` |
+
+La variable clé de cette base de données est la position géograohique `Coordonnées` des contours des communes, qui va nous permettre d'associer les restaurants recensés sur open street map à leur commune.
+
+## Source 3
 
 ```{r}
 comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
@@ -21,22 +93,8 @@ comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 
 ```
 
+## Source 4
+
 ```{r}
 résultats_votes <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
-```
-
-
-## Nettoyage de la base Open street map
-```{r}
-restos_brut <- st_read(here("restaurant.geojson"))
-
-restos <- restos_brut |> 
-  select(`name`,`amenity`,`cuisine`,`diet.vegan`,`diet.vegetarian`,`geometry`)
-```
-
-## Nettoyage de la bases des contours administratifs
-```{r}
-communes_brut <- st_read(here("contours_communes.geojson"))
-communes <- communes_brut |> 
-  select(`nom`,`geometry`)
 ```
