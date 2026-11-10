@@ -15,7 +15,7 @@ library(dplyr)
 library(sf)
 ```
 
-# Sujet
+# 1 Sujet
 
 L’offre de restauration végétarienne et végane dépend-elle du profil socio-démographique et politique des communes françaises ?
 
@@ -33,9 +33,9 @@ Nous étudierons deux groupes de facteurs. D’abord, les facteurs socio-démogr
 
 Ensuite, nous nous intéresserons aux facteurs politiques, avec les résultats électoraux de chaque commune. Nous nous attendons à ce qu’une commune où le vote écologiste ou de gauche est plus élevé ait une offre plus importante, car cette population serait potentiellement plus sensible aux questions environnementales et donc potentiellement plus ouverte à ces régimes alimentaires.
 
-# Lien vers le projet github
+# 2 Lien vers le projet github
 
-# Descriptions des sources
+# 3 Descriptions des sources
 
 Mettre lien des sources et description (Louise)
 
@@ -49,7 +49,7 @@ Nous avons utiliser le code suivant sur overpass turbo pour extraire les donnée
 
 ## Source 4
 
-# Importation, nettoyage et description des données
+# 4 Importation, nettoyage et description des données
 
 ## Open Street Map
 
