@@ -23,7 +23,7 @@ Les régimes végétarien et végan sont devenus un sujet de société de plus e
 
 Un régime végétarien exclut la viande et le poisson mais autorise les produits d’origine animale comme les œufs, le lait ou le fromage. Le régime végan (ou végétalien) exclut tous les produits d’origine animale.
 
-En France, en 2020, selon l’Ifop 2,2 % des Français suivaient un régime sans viande. En 2024, une étude d’Arcane Research comptait 5 % de végétariens, végétaliens et végans. Ces enquêtes n’utilisent pas les mêmes questions et ne se comparent pas directement, mais sur le long terme la hausse est nette : les végétariens représentaient 0,7 % des Français en 1998, contre environ 5 %. Ce sont surtout les jeunes qui sont concernés, en 2018, 12 % des 18-23 ans se déclaraient végétariens, contre 2 % des plus de 55 ans. C’est un mouvement concernant plutôt les nouvelles générations. On le voit aussi dans le quotidien des jeunes, depuis 2017, les restaurants universitaires proposent chaque jour un menu végétarien. 
+En France, en 2020, selon l’Ifop 2,2 % des Français suivaient un régime sans viande. En 2024, une étude d’Arcane Research comptait 3 % de végétariens (et 1% de végans). Ces enquêtes n’utilisent pas les mêmes questions et ne se comparent pas directement, mais sur le long terme on observe une hausse. Ce sont surtout les jeunes qui sont concernés, en 2018, 12 % des 18-23 ans se déclaraient végétariens, contre 2 % des plus de 55 ans (d'après une enquête France AgriMer). C’est un mouvement concernant plutôt les nouvelles générations. On le voit aussi dans le quotidien des jeunes, depuis 2017, les restaurants universitaires proposent chaque jour un menu végétarien. 
 
 À l’heure actuelle, à notre connaissance, aucune base de données ne mesure combien de personnes suivent ces régimes à l’échelle locale. Plutôt que la consommation, nous étudions donc l’offre de restauration. De plus en plus de restaurants proposent des alternatives végétariennes ou véganes, et on observe aussi un essor des restaurants 100 % végé/végans depuis quelques années. Leur localisation renseigne sur où se trouve la demande. Cette demande serait potentiellement corrélée à une ouverture culturelle, à un mode de vie et à d’autres caractéristiques socio-démographiques. Ce sont ces corrélations que nous allons étudier.
 
@@ -37,13 +37,41 @@ Ensuite, nous nous intéresserons aux facteurs politiques, avec les résultats �
 
 # 3 Descriptions des sources
 
-Mettre lien des sources et description (Louise)
+- Open Street Map : https://www.openstreetmap.org/#map=8/49.951/5.886 (via Overpass Turbo : https://overpass-turbo.eu)
+- Contours administratifs de communes : https://www.data.gouv.fr/datasets/contours-administratifs
+- INSEE
+- Source 4
 
-## Open street Map
+## Open Street Map
 
-Nous avons utiliser le code suivant sur overpass turbo pour extraire les données : \[out:json\]\[timeout:300\]\[maxsize:2147483648\]; area\["ISO3166-1"="FR"\]\[admin_level=2\]-\>.fr; ( nwr["diet:vegan"~"\^(yes\|only)\$"\]\["amenity"~"\^(restaurant\|fast_food\|cafe)\$"](area.fr); nwr["diet:vegetarian"~"\^(yes\|only)\$"\]\["amenity"~"\^(restaurant\|fast_food\|cafe)\$"](area.fr); nwr\["cuisine"\~"vegan\|vegetarian"\]\["amenity"\~"\^(restaurant\|fast_food\|cafe)\$"\](area.fr); ); out center tags;
+OpenStreetMap est une base de données géographiques libre et collaborative, alimentée par une communauté de contributeurs bénévoles qui saisissent et mettent à jour les lieux. 
 
-## Source 2
+Nous en extrayons les établissements de restauration (amenity = restaurant, fast-food ou café) qui portent au moins un des marqueurs suivants :
+
+- diet:vegan : signifie qu’il y a au moins un plat vegan à la carte
+- diet:vegetarian : signifie qu’il y a au moins un plat végétarien à la carte
+
+Nous ne retenons que les valeurs « yes » et « only » pour ces deux variables. 
+
+Nous avons extrait les données avec l’interface Overpass Turbo. La requête que nous avons demandé est : 
+
+« [out:json][timeout:300][maxsize:2147483648];
+area["ISO3166-1"="FR"][admin_level=2]->.fr;
+(
+  nwr["diet:vegan"~"^(yes|only)$"]["amenity"~"^(restaurant|fast_food|cafe)$"](area.fr);
+  nwr["diet:vegetarian"~"^(yes|only)$"]["amenity"~"^(restaurant|fast_food|cafe)$"](area.fr);
+  nwr["cuisine"~"vegan|vegetarian"]["amenity"~"^(restaurant|fast_food|cafe)$"](area.fr);
+);
+out center tags; »
+
+Ce code a été généré avec une IA car nous ne maitrisons pas le langage Overpass Turbo. 
+
+## Data.gouv
+
+Les données proviennes de data.gouv.fr. Les données sont produites parAdmin Express de l’IGN, complété par OpenStreetMap pour l’outre-mer, et proposé en plusieurs niveaux de généralisation. Nous utilisons la version à 100 m. 
+Les données contiennent notamment les communes (arrondissements municipaux de Paris, Marseille et Lyon inclus), et les EPCI.
+
+Les contours vont servir à rattacher chaque restaurant à sa commune, puis à relier les autres sources grâce au code commune.
 
 ## Source 3
 
@@ -58,13 +86,13 @@ Nous avons utiliser le code suivant sur overpass turbo pour extraire les donnée
 restos_brut <- st_read(here("restaurant.geojson"))
 
 restos <- restos_brut |> 
-  select(`name`,`amenity`,`cuisine`,`diet.vegan`,`diet.vegetarian`,`geometry`)
+  select(`name`,`amenity`,`diet.vegan`,`diet.vegetarian`,`geometry`)
 
 restos <- restos |> 
-  rename(Nom=`name`, "Type des restaurants"=`amenity`, Cuisine=`cuisine`,Vegan = `diet.vegan`, Vegetarien=`diet.vegetarian`, Coordonnées=`geometry`)
+  rename(Nom=`name`, "Type des restaurants"=`amenity`,Vegan = `diet.vegan`, Vegetarien=`diet.vegetarian`, Coordonnées=`geometry`)
 ```
 
-Les données extraites avec overpass turbo, nous donne une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous avons donc seulement gardé les colonnes concernant le nom du restaurant, le type de cuisine, l'information sur le régimes alimentaires : vegetarien ou vegan et les coordonnées géographiques du restaurant.
+Les données extraites avec overpass turbo, nous donne une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous avons donc seulement gardé les colonnes concernant le nom du restaurant, l'information sur le régimes alimentaires : vegetarien ou vegan et les coordonnées géographiques du restaurant.
 
 |                                     |                           |
 |-------------------------------------|---------------------------|
@@ -86,7 +114,7 @@ Ces 2 dernières varaibles nous permettrons de faire des comparaison entre les r
 #| output: false
 communes_brut <- st_read(here("contours_communes.geojson"))
 communes <- communes_brut |> 
-  select(`nom`,`geometry`)
+  select(`nom`,`geometry`,`code`)
 
 communes <- communes |> 
   rename(Commune=`nom`, Coordonnées=`geometry`)
@@ -116,3 +144,27 @@ comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 ```{r}
 résultats_votes <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
 ```
+
+# Fusion des base de données
+
+## Correspondance entre les restaurants Open Street Map et leur commune
+
+```{r}
+communes <- communes |> st_make_valid() |> st_transform(2154)
+restos   <- restos   |> st_transform(2154)
+```
+
+```{r}
+table(st_geometry_type(restos))
+restos_com <- st_join(
+  restos,
+  communes |> select(code, Commune),
+  join = st_within
+)
+
+restos_com <- restos_com |> filter(!is.na(code))
+nb_resto <- restos_com |>
+  st_drop_geometry() |>
+  count(Commune, name = "nb_resto_veg")
+```
+
