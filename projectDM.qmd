@@ -35,6 +35,8 @@ Ensuite, nous nous intéresserons aux facteurs politiques, avec les résultats �
 
 # 2 Lien vers le projet github
 
+lien vers github : https://github.com/louise-dugendremonmarthe/Projet-Data-Management.git
+
 # 3 Descriptions des sources
 
 - Open Street Map : https://www.openstreetmap.org/#map=8/49.951/5.886 (via Overpass Turbo : https://overpass-turbo.eu)
@@ -143,8 +145,15 @@ comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 
 ## Source 4
 
+Avec les chiffres de data.gouv sur les élections européennes, nous avons les score de chaque parti politique dans toutes les communes de France. 
+
+Nous nous interessons seulement au vote écologiste représenté par le vote pour le parti "Europe Écologie". Nous extrayons donc seulement les nombres concernant ce parti (liste 6 sur la base)
+
 ```{r}
 résultats_votes <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
+vote <- résultats_votes |> 
+  select(`Code commune`,`Libellé commune`,`Voix 6`,`% Voix/inscrits 6`,`% Voix/exprimés 6`)
+
 ```
 
 # 5 Jointure des bases de données
