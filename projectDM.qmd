@@ -90,6 +90,7 @@ restos <- restos_brut |>
 
 restos <- restos |> 
   rename(Nom=`name`, "Type des restaurants"=`amenity`,Vegan = `diet.vegan`, Vegetarien=`diet.vegetarian`, Coordonnées=`geometry`)
+
 ```
 
 Les données extraites avec overpass turbo, nous donne une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous avons donc seulement gardé les colonnes concernant le nom du restaurant, l'information sur le régimes alimentaires : vegetarien ou vegan et les coordonnées géographiques du restaurant.
@@ -118,6 +119,7 @@ communes <- communes_brut |>
 
 communes <- communes |> 
   rename(Commune=`nom`, Coordonnées=`geometry`)
+
 ```
 
 Nous avons seulement gardé les colonnes contenant le nom de communes et les coordonnées géographique des contours de chaque commune.
@@ -145,26 +147,41 @@ comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 résultats_votes <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
 ```
 
-# Fusion des base de données
+# 5 Jointure des bases de données
 
 ## Correspondance entre les restaurants Open Street Map et leur commune
 
-```{r}
-communes <- communes |> st_make_valid() |> st_transform(2154)
-restos   <- restos   |> st_transform(2154)
-```
+D'abord, nous faisons rattachons chaque restaurant à sa commune grâce à ses coordonnées géographiques. 
 
 ```{r}
-table(st_geometry_type(restos))
+#| message: false
+communes <- communes |> st_transform(2154)
+restos   <- restos   |> st_transform(2154) # harmonisation des bases dans un même système de coordonnées
+
 restos_com <- st_join(
   restos,
   communes |> select(code, Commune),
   join = st_within
 )
-
-restos_com <- restos_com |> filter(!is.na(code))
-nb_resto <- restos_com |>
-  st_drop_geometry() |>
-  count(Commune, name = "nb_resto_veg")
+restos_com <- restos_com |> filter(!is.na(Commune))
 ```
+
+Ensuite, nous comptons le nombre de restaurants proposant des alternatives végétariennes, proposant des alternatives vegans, étant exclusivement végétarien et étant exclusivement vegan. Nous réalisons le comptage par code et non par commune car certaine commune ont le même nom. 
+
+```{r}
+#| message: false
+nb_resto <- restos_com |>
+  group_by(code) |>
+  summarise(
+    n_total       = n(),
+    veg_options   = sum(Vegetarien == "yes",  na.rm = TRUE),
+    veg_only      = sum(Vegetarien == "only", na.rm = TRUE),
+    vegan_options = sum(Vegan == "yes",  na.rm = TRUE),
+    vegan_only    = sum(Vegan == "only", na.rm = TRUE),
+    .groups = "drop"
+  )
+
+nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(code))
+```
+
 
