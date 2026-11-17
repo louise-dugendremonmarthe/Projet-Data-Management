@@ -12,7 +12,10 @@ library(vroom)
 library(here)
 library(readxl)
 library(dplyr)
+library(tidyr)
 library(sf)
+
+here::i_am("Projet Data Management.Rproj")
 ```
 
 # 1 Sujet
