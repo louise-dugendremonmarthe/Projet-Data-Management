@@ -136,7 +136,35 @@ Nous avons seulement gardé les colonnes contenant le nom de communes et les coo
 
 La variable clé de cette base de données est la position géograohique `Coordonnées` des contours des communes, qui va nous permettre d'associer les restaurants recensés sur open street map à leur commune.
 
-## Source 3
+## Comparateur de territoires
+
+```{r}
+#| message: false
+#| warning: false
+comparateur_brut <- vroom(here("data","comparateur.csv"))
+```
+
+```{r}
+comparateur_net <- comparateur_brut |> 
+  filter(GEO_OBJECT == "COM" | GEO_OBJECT == "ARM") |> 
+  filter_out(startsWith(GEO,"97")) |> 
+  filter(TAB_MEASURE == "POP" | TAB_MEASURE == "SUP" | TAB_MEASURE == "MED_SL" | TAB_MEASURE == "PR_MD60" | TAB_MEASURE == "DWELLINGS" | TAB_MEASURE == "POP_AGE_Y15T64" | TAB_MEASURE == "DWELLINGS_OCS_DW_SEC_DW_OCC") |> 
+  filter(!is.na(OBS_VALUE))
+```
+
+```{r}
+comparateur_net <- comparateur_net |> 
+  group_by(GEO_OBJECT, GEO, TAB_MEASURE) |> 
+  slice_max(TIME_PERIOD, n = 1, with_ties = FALSE) |> 
+  ungroup()
+```
+
+```{r}
+comparateur_net <- comparateur_net |> 
+  pivot_wider(id_cols = GEO, names_from = TAB_MEASURE, values_from = OBS_VALUE) |> 
+  rename(`Code géographique` = GEO, Logements = "DWELLINGS", `Résidences secondaires` = "DWELLINGS_OCS_DW_SEC_DW_OCC", `Niveau de vie médian` = "MED_SL", Population = "POP", `Population 15-64 ans` = "POP_AGE_Y15T64", `Taux de pauvreté` = "PR_MD60", Superficie = "SUP") |> 
+  select(`Code géographique`, Superficie, Population, `Population 15-64 ans`, `Niveau de vie médian`, `Taux de pauvreté`, Logements, `Résidences secondaires`)
+```
 
 ```{r}
 #| message: false
@@ -144,9 +172,50 @@ comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 ```
 
 ```{r}
-#| message: false
-#| warning: false
-comparateur_brut <- vroom(here("data","comparateur.csv"))
+nom_communes <- comparateur_meta |> 
+  filter(GEO_OBJECT == "COM" | GEO_OBJECT == "ARM") |> 
+  select(COD_MOD, LIB_MOD) |> 
+  rename(`Code géographique`=COD_MOD, Nom=LIB_MOD)
+```
+
+Pour le nettoyage de la base, nous choisissons de garder seulement les observations qui nous intéressent : nous sélectionnons les communes de France métropolitaine, ainsi que les arrondissements municipaux de Paris, Marseille et Lyon.
+
+Pour chaque variable mesurée dans chaque commune, nous ne gardons que l'observation la plus récente.
+
+Nous nous intéressons aux variables suivantes :
+
+- `Code géographique`, unique pour chaque commune ou arrondissement et qui permettra de les identifier au moment de la jointure des bases de données
+- `Superficie`, mesurée en km2
+- `Population`, qui représente la taille de la population en nombre d'habitants
+- `Population 15-64 ans`, qui représente la part de cette population étant âgée entre 15 et 64 ans
+- `Niveau de vie médian`, mesuré en euros par ans
+- `Taux de pauvreté`, mesuré en pourcentage au seuil de 60 % de la médiane du niveau de vie
+- `Logements`, qui représente le nombre de logements au global dans la commune
+- `Résidences secondaires`, qui représente le nombre de résidences secondaires et de logements occasionnels, compris dans le nombre de logements.
+
+Concernant les observations sélectionnées, 14 ont un statut "W", ce qui signifie qu'elles incluent des données provenant d'une autre catégorie : bien que cela engendre un risque de surestimation, nous choisissons de les garder car elles ne représentent qu'une infime part des observations et cela n'aura que peu d'impact dans nos analyses globales.
+
+|                       |                             |
+|-----------------------|-----------------------------|
+| Nombre de lignes avant traitement | `{r} nrow(comparateur_brut)` |
+| Nombre de colonnes avant traitement  | `{r} ncol(comparateur_brut)` |
+| Nombre d'observations gardées | `{r} nrow(comparateur_net)` |
+| Nombre de variables gardées       | `{r} ncol(comparateur_net)` |
+
+Par ailleurs, la base contenant les métadonnées, une fois traitée dans la base `nom_communes`, nous donne le `Nom` de commune ou d'arrondissement correspondant à chaque code géographique.
+
+|                       |                          |
+|-----------------------|--------------------------|
+| Nombre d'observations | `{r} nrow(nom_communes)` |
+| Nombre de variables avant traitement  | `{r} ncol(comparateur_meta)` |
+| Nombre de variables gardées    | `{r} ncol(nom_communes)` |
+
+On peut joindre ces deux bases de données afin d'ajouter le nom de chaque commune aux autres caractéristiques renseignées.
+
+```{r}
+comparateur_final <- comparateur_net |> 
+  inner_join(nom_communes, by= join_by(`Code géographique`)) |> 
+  select(`Code géographique`, Nom, Superficie, Population, `Population 15-64 ans`, `Niveau de vie médian`, `Taux de pauvreté`, Logements, `Résidences secondaires`)
 ```
 
 ## Source 4
