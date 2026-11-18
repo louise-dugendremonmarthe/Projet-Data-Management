@@ -139,11 +139,14 @@ La variable clé de cette base de données est la position géograohique `Coordo
 ## Source 3
 
 ```{r}
+#| message: false
 comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 ```
 
 ```{r}
-
+#| message: false
+#| warning: false
+comparateur_brut <- vroom(here("data","comparateur.csv"))
 ```
 
 ## Source 4
