@@ -73,10 +73,17 @@ Ce code a été généré avec une IA car nous ne maitrisons pas le langage Over
 
 ## Data.gouv
 
-Les données proviennes de data.gouv.fr. Les données sont produites parAdmin Express de l’IGN, complété par OpenStreetMap pour l’outre-mer, et proposé en plusieurs niveaux de généralisation. Nous utilisons la version à 100 m. 
-Les données contiennent notamment les communes (arrondissements municipaux de Paris, Marseille et Lyon inclus), et les EPCI.
+Lien contours administratifs de communes : https://www.data.gouv.fr/datasets/contours-administratifs
 
-Les contours vont servir à rattacher chaque restaurant à sa commune, puis à relier les autres sources grâce au code commune.
+Lien résultats aux élections européennes : https://static.data.gouv.fr/resources/resultats-des-elections-europennes-du-9-juin-2024/20240613-155013/resultats-definitifs-par-commune.xlsx
+
+Les données proviennent de data.gouv.fr : c'est la plateforme ouverte des données publiques françaises, qui rassemble les jeux de données produits par l’État, les collectivités et d’autres organismes publics. 
+
+Nous y utilisons deux sources.
+
+Les contours administratifs: les données sont produites par Admin Express de l’IGN, complétées par OpenStreetMap pour l’outre-mer, et proposées en plusieurs niveaux de généralisation. Nous utilisons la version à 100 m. Les données contiennent notamment les communes (arrondissements municipaux de Paris, Marseille et Lyon inclus), et les EPCI. Les contours vont servir à rattacher chaque restaurant à sa commune, puis à relier les autres sources grâce au code commune.
+
+Les résultats des élections européennes du 9 juin 2024 : ce fichier publie les résultats définitifs du scrutin pour chaque commune, et comprend le nombre d’inscrits, de votants et de suffrages exprimés, et nombre de voix obtenues par chaque liste. Nous nous en servons pour mesurer le poids du vote écologiste (liste « Europe Écologie ») dans chaque commune, comme indicateur de la sensibilité politique de la population aux enjeux environnementaux.
 
 ## Source 3
 ## INSEE
