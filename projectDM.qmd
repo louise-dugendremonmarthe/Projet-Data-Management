@@ -336,4 +336,12 @@ nb_resto <- restos_com |>
 nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(code))
 ```
 
+## Correspondance entre toutes les caractéristiques socio-démographiques de la population
 
+Nous faisons la jointure des bases de données `comparateur_final` et `diplomes` afin d'avoir toutes les caractéristiques socio-démographiques de la population en une seule base : `caractéristiques_pop`. Pour cela, nous utilisons la variable `Code géographique` présente dans le deux bases, qui donne un code unique à chaque commune.
+
+```{r}
+caractéristiques_pop <- inner_join(comparateur_final, diplomes, by = join_by(`Code géographique`))
+```
+
+Au moment de la jointure, 8 communes de la base `comparateur_final` n'ont pas trouvé d'équivalent dans la base `diplomes`, nous décidons donc de les ignorer.
