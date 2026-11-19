@@ -79,6 +79,19 @@ Les données contiennent notamment les communes (arrondissements municipaux de P
 Les contours vont servir à rattacher chaque restaurant à sa commune, puis à relier les autres sources grâce au code commune.
 
 ## Source 3
+## INSEE
+
+Lien comparateur de territoires : https://www.insee.fr/fr/statistiques/2521169#consulter
+Lien diplômes et formation : https://www.insee.fr/fr/statistiques/8647010#consulter
+
+L’INSEE (Institut national de la statistique et des études économiques) est l’institut public chargé de produire, analyser et diffuser les statistiques officielles sur l’économie et la société françaises. Il réalise entre autres le recensement de la population, qui fournit des données harmonisées à l’échelle de chaque commune, ce qui en fait une source de référence pour les analyses territoriales.
+
+Nous utilisons deux sources issues de l’INSEE pour ce projet.
+
+Le comparateur de territoires : il regroupe pour chaque commune des indicateurs sur la population, les revenus et le logement datant de différentes années (plusieurs observations de dates différentes pour chaque indicateur) . Il est accompagné d’un fichier de métadonnées qui permet de retrouver le nom de chaque commune à partir de son code géographique.
+
+Les diplômes et la formation (base du recensement de la population, datée de 2022) : elle fournit la répartition de la population par tranche d’âge et par niveau de diplôme, par sexe, à l’échelle de l’IRIS (infra-communal), que nous agrégeons ensuite au niveau de la commune pour notre étude.
+
 
 ## Source 4
 
