@@ -218,6 +218,74 @@ comparateur_final <- comparateur_net |>
   select(`Code géographique`, Nom, Superficie, Population, `Population 15-64 ans`, `Niveau de vie médian`, `Taux de pauvreté`, Logements, `Résidences secondaires`)
 ```
 
+## Niveau de diplôme
+
+```{r}
+#| message: false
+diplomes_brut <- vroom(here("data","diplomes.csv"))
+```
+
+```{r}
+diplomes <- diplomes_brut |>
+  select(
+    COM, 
+    P22_POP1824, 
+    P22_POP2529, 
+    P22_POP30P, 
+    P22_NSCOL15P_DIPLMIN, 
+    P22_NSCOL15P_BAC, 
+    P22_NSCOL15P_SUP2, 
+    P22_NSCOL15P_SUP5, 
+    P22_HNSCOL15P_BAC, 
+    P22_HNSCOL15P_SUP5, 
+    P22_FNSCOL15P_BAC, 
+    P22_FNSCOL15P_SUP5) |> 
+  rename(
+    `Code géographique` = "COM", 
+    `Population 18-24 ans` = "P22_POP1824", 
+    `Population 25-29 ans` = "P22_POP2529", 
+    `Population 30+ ans` = "P22_POP30P", 
+    `Population sans diplôme` = "P22_NSCOL15P_DIPLMIN", 
+    `Population niveau Bac` = "P22_NSCOL15P_BAC", 
+    `Population niveau Bac +2` = "P22_NSCOL15P_SUP2", 
+    `Population niveau Bac +5` = "P22_NSCOL15P_SUP5", 
+    `Hommes niveau Bac` = "P22_HNSCOL15P_BAC", 
+    `Hommes niveau Bac +5` = "P22_HNSCOL15P_SUP5", 
+    `Femmes niveau Bac` = "P22_FNSCOL15P_BAC", 
+    `Femmes niveau Bac +5` = "P22_FNSCOL15P_SUP5"
+    )
+```
+
+```{r}
+diplomes <- diplomes |> 
+  group_by(`Code géographique`) |> 
+  summarise(across(everything(),sum))
+```
+
+Lors du nettoyage de la base, nous sélectionnons uniquement les variables qui nous paraissent intéressantes à garder dans l'analyse en tant que caractéristiques socio-démographiques de la population :
+
+- `Population 18-24 ans`,
+- `Population 25-29 ans`, et
+- `Population 30+ ans` afin d'avoir plus de détails dans la répartition de la population par tranches d'âge,
+- `Population sans diplôme`,
+- `Population niveau Bac`,
+- `Population niveau Bac +2`,  et
+- `Population niveau Bac +5` pour avoir plus d'informations sur le niveau d'éducation de la population de chaque commune,
+- `Hommes niveau Bac`,
+- `Hommes niveau Bac +5`,
+- `Femmes niveau Bac`, et
+- `Femmes niveau Bac +5` afin d'avoir une idée des différences de niveau d'éducation entre les genres par commune.
+
+Nous gardons également le `Code géographique` de chaque commune afin de les identifier lors de la jointure de cette base avec les autres.
+
+Concernant le niveau géographique observé, la base initiale permet une analyse plus détaillée que nécessaire avec le numéro IRIS de l'INSEE. Nous choisissons de ne pas en tenir compte et d'utilser les valeurs observées par commune (obtenues dans certains cas en additionnant les valeurs par IRIS).
+
+|                       |                          |
+|-----------------------|--------------------------|
+| Nombre d'observations | `{r} nrow(diplomes)` |
+| Nombre de variables avant nettoyage  | `{r} ncol(diplomes_brut)` |
+| Nombre de variables gardées    | `{r} ncol(diplomes)` |
+
 ## Source 4
 
 Avec les chiffres de data.gouv sur les élections européennes, nous avons les score de chaque parti politique dans toutes les communes de France. 
