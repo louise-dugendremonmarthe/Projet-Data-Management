@@ -416,3 +416,12 @@ Cette jointure réduit fortement le nombre de communes étudiées car nous passo
 
 C'est une limite de notre étude, en effet les données sur OpenStreet Map sont beaucoup moins recensées en milieu rural, ce qui fait que nous n'avons pas de données sur la restauration végétarienne/végane dans les plus petites villes rurales. 
 
+## Création de variables
+
+Nous ajoutons également une variable `Densité`, calculée comme le rapport entre la population totale et la superficie de la commune (en habitants par km²), pour tenir compte du niveau d’urbanisation. Nous nous attendons à ce que les communes plus denses possèdent une offre de restauration plus importante. Cette variable va servir de variable de contrôle dans l’analyse car elle est liée à la fois à l’offre de restauration et aux caractéristiques socio-démographiques (âge, diplôme).
+
+```{r}
+base <- base |> 
+  mutate(Densité= Population/Superficie)
+```
+
