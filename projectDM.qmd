@@ -445,7 +445,6 @@ base2 <- base2 |>
 Nous ajoutons enfin une variable `Densité`, calculée comme le rapport entre la population totale et la superficie de la commune (en habitants par km²), pour tenir compte du niveau d’urbanisation par commune. Nous nous attendons à ce que les communes plus denses possèdent une offre de restauration plus importante. Cette variable va servir de variable de contrôle dans l’analyse car elle est liée à la fois à l’offre de restauration et aux caractéristiques socio-démographiques (âge, diplôme).
 
 ```{r}
-base <- base |> 
-  select(!Coordonnées) |> 
+base1 <- base1 |> 
   mutate(Densité= Population/Superficie)
 ```
