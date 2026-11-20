@@ -461,6 +461,9 @@ Nous ajoutons enfin une variable `Densité`, calculée comme le rapport entre la
 ```{r}
 base1 <- base1 |> 
   mutate(Densité= Population/Superficie)
+
+base2 <- base2 |> 
+  mutate(Densité= Population/Superficie)
 ```
 
 # 5 Graphiques 
@@ -474,7 +477,7 @@ Afin d'obtenir un premier aperçu de la répartition géographique de l'offre de
 Nous réalisons ici une comparaison descriptive de ces indicateurs pour les cinq communes les plus peuplées de notre base de données.
 
 ```{r}
-tab_graph <- base2 |> 
+tab_graph <- base1 |> 
   slice_max(Population,n=5)
 ```
 
