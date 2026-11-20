@@ -33,7 +33,7 @@ En France, en 2020, 2,2 % des Français suivaient un régime sans viande selon l
 
 Notre analyse portera sur la France métropolitaine. Nous distinguerons les restaurants proposant des alternatives végétariennes ou véganes, qui reflètent une adoption large dans la restauration, des restaurants 100 % végé/végans, qui eux font partie d’un segment de niche.
 
-Nous étudierons deux groupes de facteurs. D’abord, les facteurs socio-démographiques et économiques, tels que l’âge, le niveau de diplôme, la taille de la population, le niveau de vie médian ou le taux de pauvreté. En effet, nous supposons que les grandes villes, avec une population jeune, diplômée et aisée, possèdent une offre plus large qu’une commune rurale avec une population plus âgée.
+Nous étudierons deux groupes de facteurs. D’abord, les facteurs socio-démographiques et économiques, tels que l’âge, le niveau de diplôme, la taille de la population, le niveau de vie médian. En effet, nous supposons que les grandes villes, avec une population jeune, diplômée et aisée, possèdent une offre plus large qu’une commune rurale avec une population plus âgée.
 
 Ensuite, nous nous intéresserons aux facteurs politiques, avec les résultats électoraux de chaque commune, en utilisant les résultats des élections européennes du 9 juin 2024. Nous nous attendons à ce qu’une commune où le vote écologiste est plus élevé ait une offre de restauration végétarienne et végane plus importante, car cette population serait potentiellement plus sensible aux questions environnementales et donc potentiellement plus ouverte à ces régimes alimentaires.
 
