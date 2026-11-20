@@ -163,7 +163,6 @@ comparateur_brut <- vroom(here("data","comparateur.csv"))
 comparateur_net <- comparateur_brut |> 
   filter(GEO_OBJECT == "COM" | GEO_OBJECT == "ARM") |> 
   filter_out(startsWith(GEO,"97")) |> 
-  filter_out(GEO == "13055" | GEO == "75056" | GEO == "69123") |> 
   filter(TAB_MEASURE == "POP" | TAB_MEASURE == "SUP" | TAB_MEASURE == "MED_SL" | TAB_MEASURE == "PR_MD60" | TAB_MEASURE == "DWELLINGS" | TAB_MEASURE == "POP_AGE_Y15T64" | TAB_MEASURE == "DWELLINGS_OCS_DW_SEC_DW_OCC") |> 
   filter(!is.na(OBS_VALUE))
 ```
@@ -194,7 +193,7 @@ nom_communes <- comparateur_meta |>
   rename(`Code`=COD_MOD, Nom=LIB_MOD)
 ```
 
-Pour le nettoyage de la base, nous choisissons de garder seulement les observations qui nous intéressent : nous sélectionnons les communes de France métropolitaine, ainsi que les arrondissements municipaux de Paris, Marseille et Lyon (nous ne gardons pas les données agrégées pour ces villes, seulement les observations au niveau des arrondissements).
+Pour le nettoyage de la base, nous choisissons de garder seulement les observations qui nous intéressent : nous sélectionnons les communes de France métropolitaine, ainsi que les arrondissements municipaux de Paris, Marseille et Lyon.
 
 Pour chaque variable mesurée dans chaque commune, nous ne gardons que l'observation la plus récente.
 
