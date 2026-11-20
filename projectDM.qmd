@@ -421,5 +421,6 @@ Nous ajoutons enfin une variable `Densité`, calculée comme le rapport entre la
 
 ```{r}
 base <- base |> 
+  select(!Coordonnées) |> 
   mutate(Densité= Population/Superficie)
 ```
