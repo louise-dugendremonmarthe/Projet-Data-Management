@@ -136,7 +136,7 @@ communes <- communes_brut |>
   select(`nom`,`geometry`,`code`)
 
 communes <- communes |> 
-  rename(Commune=`nom`, Coordonnées=`geometry`,Code=`code`)
+  rename(Nom=`nom`, Coordonnées=`geometry`,Code=`code`)
 
 ```
 
@@ -344,10 +344,10 @@ restos   <- restos   |> st_transform(2154) # harmonisation des bases dans un mê
 
 restos_com <- st_join(
   restos,
-  communes |> select(Code, Commune),
+  communes |> select(Code, Nom),
   join = st_within
 )
-restos_com <- restos_com |> filter(!is.na(Commune))
+restos_com <- restos_com |> filter(!is.na(Nom))
 ```
 
 Certains restaurants 100% végans n'ont pas indiqué la variable `Vegetarien`, alors que le véganisme inclut le végétarianisme. On modifie donc la colonne `Vegetarien` pour que quand `Vegan` vaut "only", `Vegetarien` vaut aussi "only".
