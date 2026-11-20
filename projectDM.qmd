@@ -403,11 +403,13 @@ résultats_pour_joindre <- résultats_votes |>
 caractéristiques_pop_final <- left_join(caractéristiques_pop, résultats_pour_joindre, by = join_by(Code))
 ```
 
-## Jointure finale 
+## Jointure finale et constitution des bases d'analyse
 
-Enfin, nous joignons la base `caractéristiques_pop_final` concernant les caractéristiques socio-démographiques et politique par commune avec la base `nb_resto` regroupant le nombre de restaurants végétariens et végans par commune. 
+Enfin, nous joignons la base `caractéristiques_pop_final` regroupant les caractéristiques socio-démographiques et politiques des communes avec la base `nb_resto` recensant le nombre de restaurants proposant une offre végétarienne et végane dans chaque commune. 
 
-Nous effectuons une jointure par la gauche pour que les villes ne possédant pas de restaurants végetariens ou végans apparaissent quand même puisque cela revèlateur et utile pour notre étude. 
+### Base complète
+
+Nous effectuons une jointure par la gauche pour que les villes ne possédant pas de restaurants végetariens ou végans apparaissent quand même, puisque une absence d'offre est aussi révelateur et utile pour notre étude. 
 
 
 ```{r}
@@ -416,21 +418,21 @@ nb_resto <- nb_resto |> select(!Nom)
 ```
 
 ```{r}
-base1 <- right_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
-  select(!Coordonnées) # à changer
+base_<- right_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
+  select(!Coordonnées) 
 ```
 
 ```{r}
-base2 <- left_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
+base1 <- left_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
   select(!Coordonnées)
 ```
 
-Cette jointure laisse beaucoup de valeurs manquantes "NA" concernant la restauration végétarienne/végane car notre base concernant la restauration contient `{r} nrow(base1)` observations et nous avons `{r} nrow(caractéristiques_pop_final)` observations sur les communes. Nous remplaçons les valeurs non rensignées par des 0. 
+Cette jointure génère de nombreuses valeurs manquantes "NA" pour les variables concernant la restauration végétarienne/végane. Car en effet notre base concernant la restauration contient `{r} nrow(nb_resto)` observations et nous avons `{r} nrow(caractéristiques_pop_final)` observations sur les communes. Nous remplaçons les valeurs non rensignées par des 0. 
 
-Il est important de noter que il y a beacoup de valeurs manquantes sur la restauration végétarienne/végane dans les plus petites villes rurales car les données OpenStreet Map sont beaucoup moins recensées en milieu rural. 
+Il est important de noter que l'absence de restaurants dans OpenStreetMap ne signifie pas nécessairement qu'il n'en existe aucun dans la réalité. Certaines communes, notamment rurales, peuvent être moins bien renseignées dans cette base collaborative.
 
 ```{r}
-base2 <- base2 |>
+base1 <- base1 |>
   mutate(
     vege_only = case_when(is.na(vege_only) ~ 0,TRUE ~ vege_only),
     vegan_only = case_when(is.na(vegan_only) ~ 0,TRUE ~ vegan_only),
@@ -439,6 +441,18 @@ base2 <- base2 |>
   )
 ```
 
+Par conséquent, les nombreux zéros présents dans cette première base risquent d'influencer fortement les statistiques descriptives et les représentations graphiques. 
+
+C'est pourquoi nous créons également une base avec uniquement les communes ayant des restaurants végés/végans renseignés. Cela nous permet de faire une analyse sur l'ensemble des communes françaises et une autre plus spécifique sur les communes où ce type de restauration est établie et recensée. 
+
+### Base restreinte 
+
+Pour faire la jointure, nous faisons une jointure par la droite, cela permet de conserver les communes uniquement les communes présentes dans `nb_resto`, celles qui possèdent des offres de restauration végés/végans.
+
+```{r}
+base2<- right_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
+  select(!Coordonnées) 
+```
 
 ## Création de variable
 
