@@ -136,7 +136,7 @@ communes <- communes_brut |>
   select(`nom`,`geometry`,`code`)
 
 communes <- communes |> 
-  rename(Commune=`nom`, Coordonnées=`geometry`)
+  rename(Commune=`nom`, Coordonnées=`geometry`,Code=`code`)
 
 ```
 
@@ -176,8 +176,8 @@ comparateur_net <- comparateur_net |>
 ```{r}
 comparateur_net <- comparateur_net |> 
   pivot_wider(id_cols = GEO, names_from = TAB_MEASURE, values_from = OBS_VALUE) |> 
-  rename(`Code géographique` = GEO, Logements = "DWELLINGS", `Résidences secondaires` = "DWELLINGS_OCS_DW_SEC_DW_OCC", `Niveau de vie médian` = "MED_SL", Population = "POP", `Population 15-64 ans` = "POP_AGE_Y15T64", `Taux de pauvreté` = "PR_MD60", Superficie = "SUP") |> 
-  select(`Code géographique`, Superficie, Population, `Population 15-64 ans`, `Niveau de vie médian`, `Taux de pauvreté`, Logements, `Résidences secondaires`)
+  rename(`Code` = GEO, Logements = "DWELLINGS", `Résidences secondaires` = "DWELLINGS_OCS_DW_SEC_DW_OCC", `Niveau de vie médian` = "MED_SL", Population = "POP", `Population 15-64 ans` = "POP_AGE_Y15T64", `Taux de pauvreté` = "PR_MD60", Superficie = "SUP") |> 
+  select(`Code`, Superficie, Population, `Population 15-64 ans`, `Niveau de vie médian`, `Taux de pauvreté`, Logements, `Résidences secondaires`)
 ```
 
 ```{r}
@@ -189,7 +189,7 @@ comparateur_meta <- vroom(here("data","comparateur_metadata.csv"))
 nom_communes <- comparateur_meta |> 
   filter(GEO_OBJECT == "COM" | GEO_OBJECT == "ARM") |> 
   select(COD_MOD, LIB_MOD) |> 
-  rename(`Code géographique`=COD_MOD, Nom=LIB_MOD)
+  rename(`Code`=COD_MOD, Nom=LIB_MOD)
 ```
 
 Pour le nettoyage de la base, nous choisissons de garder seulement les observations qui nous intéressent : nous sélectionnons les communes de France métropolitaine, ainsi que les arrondissements municipaux de Paris, Marseille et Lyon (nous ne gardons pas les données agrégées pour ces villes, seulement les observations au niveau des arrondissements).
@@ -198,7 +198,7 @@ Pour chaque variable mesurée dans chaque commune, nous ne gardons que l'observa
 
 Nous nous intéressons aux variables suivantes :
 
-- `Code géographique`, unique pour chaque commune ou arrondissement et qui permettra de les identifier au moment de la jointure des bases de données
+- `Code`, unique pour chaque commune ou arrondissement et qui permettra de les identifier au moment de la jointure des bases de données
 - `Superficie`, mesurée en km2
 - `Population`, qui représente la taille de la population en nombre d'habitants
 - `Population 15-64 ans`, qui représente la part de cette population étant âgée entre 15 et 64 ans
@@ -228,8 +228,8 @@ On peut joindre ces deux bases de données afin d'ajouter le nom de chaque commu
 
 ```{r}
 comparateur_final <- comparateur_net |> 
-  inner_join(nom_communes, by= join_by(`Code géographique`)) |> 
-  select(`Code géographique`, Nom, Superficie, Population, `Population 15-64 ans`, `Niveau de vie médian`, `Taux de pauvreté`, Logements, `Résidences secondaires`)
+  inner_join(nom_communes, by= join_by(`Code`)) |> 
+  select(`Code`, Nom, Superficie, Population, `Population 15-64 ans`, `Niveau de vie médian`, `Taux de pauvreté`, Logements, `Résidences secondaires`)
 ```
 
 ## Niveau de diplôme
@@ -255,7 +255,7 @@ diplomes <- diplomes_brut |>
     P22_FNSCOL15P_BAC, 
     P22_FNSCOL15P_SUP5) |> 
   rename(
-    `Code géographique` = "COM", 
+    `Code` = "COM", 
     `Population 18-24 ans` = "P22_POP1824", 
     `Population 25-29 ans` = "P22_POP2529", 
     `Population 30+ ans` = "P22_POP30P", 
@@ -272,7 +272,7 @@ diplomes <- diplomes_brut |>
 
 ```{r}
 diplomes <- diplomes |> 
-  group_by(`Code géographique`) |> 
+  group_by(`Code`) |> 
   summarise(across(everything(),sum))
 ```
 
@@ -290,7 +290,7 @@ Lors du nettoyage de la base, nous sélectionnons uniquement les variables qui n
 - `Femmes niveau Bac`, et
 - `Femmes niveau Bac +5` afin d'avoir une idée des différences de niveau d'éducation entre les genres par commune.
 
-Nous gardons également le `Code géographique` de chaque commune afin de les identifier lors de la jointure de cette base avec les autres.
+Nous gardons également le `Code` géographique de chaque commune afin de les identifier lors de la jointure de cette base avec les autres.
 
 Concernant le niveau géographique observé, la base initiale permet une analyse plus détaillée que nécessaire avec le numéro IRIS de l'INSEE. Nous choisissons de ne pas en tenir compte et d'utilser les valeurs observées par commune (obtenues dans certains cas en additionnant les valeurs par IRIS).
 
@@ -326,7 +326,7 @@ restos   <- restos   |> st_transform(2154) # harmonisation des bases dans un mê
 
 restos_com <- st_join(
   restos,
-  communes |> select(code, Commune),
+  communes |> select(Code, Commune),
   join = st_within
 )
 restos_com <- restos_com |> filter(!is.na(Commune))
@@ -348,7 +348,7 @@ Ensuite, nous comptons le nombre de restaurants proposant des alternatives vég�
 ```{r}
 #| message: false
 nb_resto <- restos_com |>
-  group_by(code) |>
+  group_by(Code) |>
   summarise(
     n_total       = n(),
     vege_options   = sum(Vegetarien == "yes",  na.rm = TRUE),
@@ -358,8 +358,8 @@ nb_resto <- restos_com |>
     .groups = "drop"
   )
 
-nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(code)) |> 
-  select(`code`,`Commune`,`n_total`,`vege_options`,`vege_only`,`vegan_options`,`vegan_only`)
+nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(Code)) |> 
+  select(`Code`,`Commune`,`n_total`,`vege_options`,`vege_only`,`vegan_options`,`vegan_only`)
 ```
 
 ## Correspondance entre toutes les caractéristiques socio-démographiques de la population
@@ -367,7 +367,7 @@ nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(code)) |>
 Nous faisons la jointure des bases de données `comparateur_final` et `diplomes` afin d'avoir toutes les caractéristiques socio-démographiques de la population en une seule base : `caractéristiques_pop`. Pour cela, nous utilisons la variable `Code géographique` présente dans le deux bases, qui donne un code unique à chaque commune.
 
 ```{r}
-caractéristiques_pop <- inner_join(comparateur_final, diplomes, by = join_by(`Code géographique`))
+caractéristiques_pop <- inner_join(comparateur_final, diplomes, by = join_by(`Code`))
 ```
 
 Au moment de la jointure, 8 communes de la base `comparateur_final` n'ont pas trouvé d'équivalent dans la base `diplomes`, nous décidons donc de les ignorer.
