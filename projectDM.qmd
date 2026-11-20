@@ -102,7 +102,7 @@ Les diplômes et la formation (base du recensement de la population, datée de 2
 
 ```{r}
 #| output: false
-restos_brut <- st_read(here("restaurant.geojson"))
+restos_brut <- st_read(here("data","restaurant.geojson"))
 
 restos <- restos_brut |> 
   select(`name`,`amenity`,`diet.vegan`,`diet.vegetarian`,`geometry`)
@@ -132,7 +132,7 @@ Ces 2 dernières variables nous permettront de faire des comparaison entre les r
 
 ```{r}
 #| output: false
-communes_brut <- st_read(here("contours_communes.geojson"))
+communes_brut <- st_read(here("data","contours_communes.geojson"))
 communes <- communes_brut |> 
   select(`nom`,`geometry`,`code`) |> 
   filter_out(startsWith(code,"97") | startsWith(code,"98"))
