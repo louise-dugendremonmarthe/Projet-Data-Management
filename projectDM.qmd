@@ -151,6 +151,8 @@ La variable clé de cette base de données est la position géograohique `Coordo
 
 ## Comparateur de territoires
 
+La base de données `comparateur.csv` doit être ouverte à l'aide de Git Large File Storage.
+
 ```{r}
 #| message: false
 #| warning: false
