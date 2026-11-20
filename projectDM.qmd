@@ -385,7 +385,7 @@ nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(Code)) |>
 Nous faisons la jointure des bases de données `comparateur_final` et `diplomes` afin d'avoir toutes les caractéristiques socio-démographiques de la population en une seule base : `caractéristiques_pop`. Pour cela, nous utilisons la variable `Code` présente dans le deux bases, qui donne un code géographique unique à chaque commune.
 
 ```{r}
-caractéristiques_pop <- inner_join(comparateur_final, diplomes, by = join_by(`Code`))
+caractéristiques_pop <- left_join(comparateur_final, diplomes, by = join_by(`Code`))
 ```
 
 Au moment de la jointure, 8 communes de la base `comparateur_final` n'ont pas trouvé d'équivalent dans la base `diplomes`, nous décidons donc de les ignorer.
