@@ -18,7 +18,7 @@ library(sf)
 here::i_am("Projet Data Management.Rproj")
 ```
 
-# 1 Sujet
+# 1 Introduction
 
 L’offre de restauration végétarienne et végane dépend-elle du profil socio-démographique et politique des communes françaises ?
 
@@ -36,16 +36,14 @@ Nous étudierons deux groupes de facteurs. D’abord, les facteurs socio-démogr
 
 Ensuite, nous nous intéresserons aux facteurs politiques, avec les résultats électoraux de chaque commune, en utilisant les résultats des élections européennes du 9 juin 2024. Nous nous attendons à ce qu’une commune où le vote écologiste est plus élevé ait une offre de restauration végétarienne et végane plus importante, car cette population serait potentiellement plus sensible aux questions environnementales et donc potentiellement plus ouverte à ces régimes alimentaires.
 
-# 2 Lien vers le projet github
 
 lien vers github : https://github.com/louise-dugendremonmarthe/Projet-Data-Management.git
-
-# 3 Descriptions des sources
 
 - Open Street Map : https://www.openstreetmap.org/#map=8/49.951/5.886 (via Overpass Turbo : https://overpass-turbo.eu)
 - Contours administratifs de communes : https://www.data.gouv.fr/datasets/contours-administratifs
 - INSEE
 - Source 4
+# 2 Description des sources
 
 ## Open Street Map
 
@@ -85,7 +83,6 @@ Les contours administratifs: les données sont produites par Admin Express de l�
 
 Les résultats des élections européennes du 9 juin 2024 : ce fichier publie les résultats définitifs du scrutin pour chaque commune, et comprend le nombre d’inscrits, de votants et de suffrages exprimés, et nombre de voix obtenues par chaque liste. Nous nous en servons pour mesurer le poids du vote écologiste (liste « Europe Écologie ») dans chaque commune, comme indicateur de la sensibilité politique de la population aux enjeux environnementaux.
 
-## Source 3
 ## INSEE
 
 Lien comparateur de territoires : https://www.insee.fr/fr/statistiques/2521169#consulter
@@ -100,11 +97,9 @@ Le comparateur de territoires : il regroupe pour chaque commune des indicateurs 
 Les diplômes et la formation (base du recensement de la population, datée de 2022) : elle fournit la répartition de la population par tranche d’âge et par niveau de diplôme, par sexe, à l’échelle de l’IRIS (infra-communal), que nous agrégeons ensuite au niveau de la commune pour notre étude.
 
 
-## Source 4
+# 3 Importation, nettoyage et description des données
 
-# 4 Importation, nettoyage et description des données
-
-## Open Street Map
+## Restaurants
 
 ```{r}
 #| output: false
@@ -306,7 +301,7 @@ Concernant le niveau géographique observé, la base initiale permet une analyse
 | Nombre de variables avant nettoyage  | `{r} ncol(diplomes_brut)` |
 | Nombre de variables gardées    | `{r} ncol(diplomes)` |
 
-## Source 4
+## Résultats des élections
 
 Avec les chiffres de data.gouv sur les élections européennes, nous avons les score de chaque parti politique dans toutes les communes de France. 
 
@@ -319,7 +314,7 @@ vote <- résultats_votes |>
 
 ```
 
-# 5 Jointure des bases de données
+# 4 Jointure des bases de données
 
 ## Correspondance entre les restaurants Open Street Map et leur commune
 
