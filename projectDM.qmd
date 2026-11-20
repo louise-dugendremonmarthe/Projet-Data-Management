@@ -406,18 +406,41 @@ caractéristiques_pop_final <- left_join(caractéristiques_pop, résultats_pour_
 ## Jointure finale 
 
 Enfin, nous joignons la base `caractéristiques_pop_final` concernant les caractéristiques socio-démographiques et politique par commune avec la base `nb_resto` regroupant le nombre de restaurants végétariens et végans par commune. 
-Nous effectuons une jointure par la droite pour que les villes ne possédant pas de restaurants végetariens ou végans n'apparaissent pas dans notre base. 
+
+Nous effectuons une jointure par la gauche pour que les villes ne possédant pas de restaurants végetariens ou végans apparaissent quand même puisque cela revèlateur et utile pour notre étude. 
+
 
 ```{r}
+#| echo: false
 nb_resto <- nb_resto |> select(!Nom) 
-base <- right_join(caractéristiques_pop_final,nb_resto,join_by(Code))
 ```
 
-Cette jointure réduit fortement le nombre de communes étudiées car nous passons de `{r} nrow(caractéristiques_pop_final)` observations à `{r} nrow(base)` observations. 
+```{r}
+base1 <- right_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
+  select(!Coordonnées) # à changer
+```
 
-C'est une limite de notre étude, en effet les données sur OpenStreet Map sont beaucoup moins recensées en milieu rural, ce qui fait que nous n'avons pas de données sur la restauration végétarienne/végane dans les plus petites villes rurales. 
+```{r}
+base2 <- left_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
+  select(!Coordonnées)
+```
 
-## Création de variables
+Cette jointure laisse beaucoup de valeurs manquantes "NA" concernant la restauration végétarienne/végane car notre base concernant la restauration contient `{r} nrow(base1)` observations et nous avons `{r} nrow(caractéristiques_pop_final)` observations sur les communes. Nous remplaçons les valeurs non rensignées par des 0. 
+
+Il est important de noter que il y a beacoup de valeurs manquantes sur la restauration végétarienne/végane dans les plus petites villes rurales car les données OpenStreet Map sont beaucoup moins recensées en milieu rural. 
+
+```{r}
+base2 <- base2 |>
+  mutate(
+    vege_only = case_when(is.na(vege_only) ~ 0,TRUE ~ vege_only),
+    vegan_only = case_when(is.na(vegan_only) ~ 0,TRUE ~ vegan_only),
+    vege_options = case_when(is.na(vege_options) ~ 0,TRUE ~ vege_options),
+    vegan_options = case_when(is.na(vegan_options) ~ 0,TRUE ~ vegan_options)
+  )
+```
+
+
+## Création de variable
 
 Nous ajoutons enfin une variable `Densité`, calculée comme le rapport entre la population totale et la superficie de la commune (en habitants par km²), pour tenir compte du niveau d’urbanisation par commune. Nous nous attendons à ce que les communes plus denses possèdent une offre de restauration plus importante. Cette variable va servir de variable de contrôle dans l’analyse car elle est liée à la fois à l’offre de restauration et aux caractéristiques socio-démographiques (âge, diplôme).
 
