@@ -111,7 +111,7 @@ restos <- restos |>
 
 ```
 
-Les données extraites avec overpass turbo, nous donne une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous avons donc seulement gardé les colonnes concernant le nom du restaurant, l'information sur le régimes alimentaires : vegetarien ou vegan et les coordonnées géographiques du restaurant.
+Les données extraites avec overpass turbo nous donne une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous gardons donc seulement les colonnes concernant le nom du restaurant, l'information sur le régimes alimentaires : vegetarien ou vegan et les coordonnées géographiques du restaurant.
 
 |                                     |                         |
 |-------------------------------------|-------------------------|
@@ -332,7 +332,18 @@ restos_com <- st_join(
 restos_com <- restos_com |> filter(!is.na(Commune))
 ```
 
-Ensuite, nous comptons le nombre de restaurants proposant des alternatives végétariennes, proposant des alternatives vegans, étant exclusivement végétarien et étant exclusivement vegan. Nous réalisons le comptage par code et non par commune car certaine commune ont le même nom.
+Certains restaurants 100% végans n'ont pas indiqué la variable `Vegetarien`, alors que le véganisme inclut le végétarianisme. On modifie donc la colonne `Vegetarien` pour que quand `Vegan` vaut "only", `Vegetarien` vaut aussi "only".
+
+```{r}
+restos_com <- restos_com |>
+  mutate(Vegetarien = case_when(
+    Vegan == "only" ~ "only",
+    TRUE ~ Vegetarien
+  ))
+```
+
+
+Ensuite, nous comptons le nombre de restaurants proposant des alternatives végétariennes, proposant des alternatives véganes, étant exclusivement végétarien et étant exclusivement végan. Nous réalisons le comptage par code et non par commune car certaine commune ont le même nom.
 
 ```{r}
 #| message: false
@@ -340,14 +351,15 @@ nb_resto <- restos_com |>
   group_by(code) |>
   summarise(
     n_total       = n(),
-    veg_options   = sum(Vegetarien == "yes",  na.rm = TRUE),
-    veg_only      = sum(Vegetarien == "only", na.rm = TRUE),
+    vege_options   = sum(Vegetarien == "yes",  na.rm = TRUE),
+    vege_only      = sum(Vegetarien == "only", na.rm = TRUE),
     vegan_options = sum(Vegan == "yes",  na.rm = TRUE),
     vegan_only    = sum(Vegan == "only", na.rm = TRUE),
     .groups = "drop"
   )
 
-nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(code))
+nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(code)) |> 
+  select(`code`,`Commune`,`n_total`,`vege_options`,`vege_only`,`vegan_options`,`vegan_only`)
 ```
 
 ## Correspondance entre toutes les caractéristiques socio-démographiques de la population
