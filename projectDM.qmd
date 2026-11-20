@@ -161,6 +161,7 @@ comparateur_brut <- vroom(here("data","comparateur.csv"))
 comparateur_net <- comparateur_brut |> 
   filter(GEO_OBJECT == "COM" | GEO_OBJECT == "ARM") |> 
   filter_out(startsWith(GEO,"97")) |> 
+  filter_out(GEO == "13055" | GEO == "75056" | GEO == "69123") |> 
   filter(TAB_MEASURE == "POP" | TAB_MEASURE == "SUP" | TAB_MEASURE == "MED_SL" | TAB_MEASURE == "PR_MD60" | TAB_MEASURE == "DWELLINGS" | TAB_MEASURE == "POP_AGE_Y15T64" | TAB_MEASURE == "DWELLINGS_OCS_DW_SEC_DW_OCC") |> 
   filter(!is.na(OBS_VALUE))
 ```
