@@ -303,16 +303,33 @@ Concernant le niveau géographique observé, la base initiale permet une analyse
 
 ## Résultats des élections
 
-Avec les chiffres de data.gouv sur les élections européennes, nous avons les score de chaque parti politique dans toutes les communes de France.
-
-Nous nous interessons seulement au vote écologiste représenté par le vote pour le parti "Europe Écologie". Nous extrayons donc seulement les nombres concernant ce parti (liste 6 sur la base)
+```{r}
+résultats_votes_brut <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
+```
 
 ```{r}
-résultats_votes <- read_excel(here("data","resultats-definitifs-par-commune.xlsx"))
-vote <- résultats_votes |> 
-  select(`Code commune`,`Libellé commune`,`Voix 6`,`% Voix/inscrits 6`,`% Voix/exprimés 6`)
-
+résultats_votes <- résultats_votes_brut |> 
+  select(`Code commune`,`Libellé commune`,`Voix 6`,`% Voix/inscrits 6`) |> 
+  rename(Code = "Code commune", Nom = "Libellé commune", Voix = "Voix 6", `% Voix/inscrits` = "% Voix/inscrits 6")
 ```
+
+Avec les chiffres de data.gouv sur les élections européennes de 2024, nous avons les scores de chaque parti politique dans toutes les communes de France.
+
+Nous nous intéressons seulement au vote écologiste, représenté par le vote pour le parti "Europe Écologie". Nous extrayons donc seulement les observations concernant ce parti (liste 6 sur la base).
+
+Les variables d'intérêt sont : 
+
+- `Voix` qui comptabilise le nombre de voix pour le parti "Europe Écologie" dans chaque commune
+- `% Voix/inscrits` qui calcule en pourcentage la part des voix pour le parti "Europe Écologie" dans les citoyens inscrits pour les élections
+
+Nous gardons également les variables d'identification `Code` et `Nom` pour chaque commune.
+
+|                       |                          |
+|-----------------------|--------------------------|
+| Nombre d'observations | `{r} nrow(résultats_votes)` |
+| Nombre de variables avant nettoyage  | `{r} ncol(résultats_votes_brut)` |
+| Nombre de variables gardées    | `{r} ncol(résultats_votes)` |
+
 
 # 4 Jointure des bases de données
 
