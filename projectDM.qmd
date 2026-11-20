@@ -24,7 +24,7 @@ here::i_am("Projet Data Management.Rproj")
 
 Les régimes végétarien et végan sont devenus un sujet de société de plus en plus visible en France. Cette progression est liée à des préoccupations de bien-être animal, de santé et d’empreinte environnementale.
 
-Un régime végétarien exclut la viande et le poisson mais autorise les produits d’origine animale comme les œufs, le lait ou le fromage. Le régime végan (ou végétalien) exclut tous les produits d’origine animale.
+Un régime végétarien exclut la viande et le poisson mais autorise les produits d’origine animale comme les œufs, le lait ou le fromage. Le régime végan exclut tous les produits d’origine animale.
 
 En France, en 2020, 2,2 % des Français suivaient un régime sans viande selon l’Ifop. En 2024, une étude d’Arcane Research comptait 3 % de végétariens (et 1% de végans). Ces enquêtes n’utilisent pas exactement les mêmes questions et ne peuvent pas se comparer directement, mais sur le long terme on observe une hausse. Ce sont surtout les jeunes qui sont concernés : en 2018, 12 % des 18-23 ans se déclaraient végétariens, contre 2 % des plus de 55 ans (d'après une enquête France AgriMer). C’est un mouvement concernant plutôt les nouvelles générations. On le voit aussi dans le quotidien des jeunes, depuis 2017, les restaurants universitaires proposent chaque jour un menu végétarien.
 
@@ -140,7 +140,7 @@ communes <- communes |>
 
 ```
 
-Nous avons seulement gardé les colonnes contenant le nom de communes et les coordonnées géographique des contours de chaque commune.
+Nous gardons seulement les colonnes contenant le nom de communes et les coordonnées géographique des contours de chaque commune.
 
 |                       |                      |
 |-----------------------|----------------------|
