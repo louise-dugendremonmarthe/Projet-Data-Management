@@ -448,3 +448,51 @@ Nous ajoutons enfin une variable `Densité`, calculée comme le rapport entre la
 base1 <- base1 |> 
   mutate(Densité= Population/Superficie)
 ```
+
+# 5 Graphiques 
+
+Afin d'obtenir un premier aperçu de la répartition géographique de l'offre de restauration végétarienne et végane, nous nous intéressons à trois dimensions centrales de notre étude : 
+
+- le nombre de restaurants proposant une offre végétarienne ou végane 
+- le vote écologiste 
+- le niveau de vie médian des communes
+
+Nous réalisons ici une comparaison descriptive de ces indicateurs pour les cinq communes les plus peuplées de notre base de données.
+
+```{r}
+tab_graph <- base2 |> 
+  slice_max(Population,n=5)
+```
+
+```{r}
+#| echo: false
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vegan_only))+
+  geom_col()
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vege_only))+
+  geom_col()
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vegan_options))+
+  geom_col()
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vege_options))+
+  geom_col()
+```
+
+```{r}
+#| echo: false
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vegan_only))+
+  geom_col()
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vege_only))+
+  geom_col()
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vegan_options))+
+  geom_col()
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vege_options))+
+  geom_col()
+```
+
