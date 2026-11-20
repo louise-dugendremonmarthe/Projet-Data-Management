@@ -30,7 +30,7 @@ En France, en 2020, 2,2 % des Français suivaient un régime sans viande selon l
 
 À l’heure actuelle, à notre connaissance, aucune base de données ne mesure combien de personnes suivent ces régimes à l’échelle locale. Plutôt que la consommation, nous étudions donc l’offre de restauration. De plus en plus de restaurants proposent des alternatives végétariennes ou véganes, et on observe aussi un essor des restaurants 100 % végé/végans depuis quelques années. Nous considérons que leur localisation renseigne sur où se trouve la demande. Cette demande serait potentiellement corrélée à une ouverture culturelle, à un mode de vie et à d’autres caractéristiques socio-démographiques. Ce sont ces corrélations que nous allons étudier.
 
-Notre analyse portera sur la France métropolitaine. Après analyse et nettoyage des bases de données, nous excluons les communes de moins de 10 000 habitants, où l’offre de restauration est très limitée. Nous aurons ainsi quelques milliers de communes. Nous distinguerons les restaurants proposant des alternatives végétariennes ou véganes, qui reflètent une adoption large dans la restauration, des restaurants 100 % végé/végans, qui eux font partie d’un segment de niche.
+Notre analyse portera sur la France métropolitaine. Nous distinguerons les restaurants proposant des alternatives végétariennes ou véganes, qui reflètent une adoption large dans la restauration, des restaurants 100 % végé/végans, qui eux font partie d’un segment de niche.
 
 Nous étudierons deux groupes de facteurs. D’abord, les facteurs socio-démographiques et économiques, tels que l’âge, le niveau de diplôme, la taille de la population, le niveau de vie médian ou le taux de pauvreté. En effet, nous supposons que les grandes villes, avec une population jeune, diplômée et aisée, possèdent une offre plus large qu’une commune rurale avec une population plus âgée.
 
@@ -54,7 +54,7 @@ Nous en extrayons les établissements de restauration (amenity = restaurant, fas
 
 Nous ne retenons que les valeurs « yes » et « only » pour ces deux variables.
 
-Nous avons extrait les données avec l’interface Overpass Turbo. La requête que nous avons demandé est :
+Nous extrayons les données avec l’interface Overpass Turbo. La requête demandée est :
 
 "[out:json][timeout:300][maxsize:2147483648];
 area["ISO3166-1"="FR"][admin_level=2]->.fr;
@@ -65,7 +65,7 @@ area["ISO3166-1"="FR"][admin_level=2]->.fr;
 );
 out center tags;"
 
-Ce code a été généré avec une IA car nous ne maitrisons pas le langage Overpass Turbo.
+Ce code a été généré avec une IA car nous ne maitrisons pas le langage d'Overpass Turbo.
 
 ## Data.gouv
 
@@ -77,7 +77,7 @@ Les données proviennent de data.gouv.fr : c'est la plateforme ouverte des donn�
 
 Nous y utilisons deux sources.
 
-Les contours administratifs: les données sont produites par Admin Express de l’IGN, complétées par OpenStreetMap pour l’outre-mer, et proposées en plusieurs niveaux de généralisation. Nous utilisons la version à 100 m. Les données contiennent notamment les communes (arrondissements municipaux de Paris, Marseille et Lyon inclus), et les EPCI. Les contours vont servir à rattacher chaque restaurant à sa commune, puis à relier les autres sources grâce au code commune.
+Les contours administratifs : les données sont produites par Admin Express de l’IGN, et proposées en plusieurs niveaux de généralisation. Nous utilisons la version à 100 m. Les données contiennent notamment les communes (arrondissements municipaux de Paris, Marseille et Lyon inclus), et les EPCI. Les contours vont servir à rattacher chaque restaurant à sa commune, puis à relier les autres sources grâce au code commune.
 
 Les résultats des élections européennes du 9 juin 2024 : ce fichier publie les résultats définitifs du scrutin pour chaque commune, et comprend le nombre d’inscrits, de votants et de suffrages exprimés, et nombre de voix obtenues par chaque liste. Nous nous en servons pour mesurer le poids du vote écologiste (liste « Europe Écologie ») dans chaque commune, comme indicateur de la sensibilité politique de la population aux enjeux environnementaux.
 
@@ -111,7 +111,7 @@ restos <- restos |>
 
 ```
 
-Les données extraites avec overpass turbo nous donne une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous gardons donc seulement les colonnes concernant le nom du restaurant, l'information sur le régimes alimentaires : vegetarien ou vegan et les coordonnées géographiques du restaurant.
+Les données extraites avec Overpass Turbo nous donnent une base avec de nombreuses caractéristiques souvent non renseignées, et inutiles pour notre projet. Nous gardons donc seulement les colonnes concernant le nom et le type du restaurant, l'information sur le régime alimentaire (végétarien ou végan) et les coordonnées géographiques du restaurant.
 
 |                                     |                         |
 |-------------------------------------|-------------------------|
@@ -119,13 +119,13 @@ Les données extraites avec overpass turbo nous donne une base avec de nombreuse
 | Nombre de variables avant nettoyage | `{r} ncol(restos_brut)` |
 | Nombre de variables après nettoyage | `{r} ncol(restos)`      |
 
-Les varibles les plus interessantes sont :
+Les variables les plus intéressantes sont :
 
-- les coordonnées géographiques des restaurants pour pouvoir l'associer à leur commune
-- la variable `Vegetarien` qui indique "yes" s'il y a des alternatives vegetariennes ou "only" si le restaurant est 100% vegetarien
-- la variable `Vegan` qui indique "yes" s'il y a des alternatives vegans ou "only" si le restaurant est 100% vegan. Cette variable contient souvent beucoup de "NA" pour les restaurants qui ont rempli la varible vegetarien mais pas la vegan.
+- les coordonnées géographiques de chaque restaurant, pour pouvoir l'associer à une commune
+- la variable `Vegetarien`, qui indique "yes" s'il y a des alternatives végétariennes ou "only" si le restaurant est 100% végétarien
+- la variable `Vegan`, qui indique "yes" s'il y a des alternatives véganes ou "only" si le restaurant est 100% végan. Cette variable contient beucoup de "NA" pour les restaurants qui ont rempli la variable "végétarien" mais pas la "végan".
 
-Ces 2 dernières varaibles nous permettrons de faire des comparaison entre les restaurants 100% vegetariens/vegan et ceux qui proposent seulement des alternatives.
+Ces 2 dernières variables nous permettront de faire des comparaison entre les restaurants 100% végétariens/végans et ceux qui proposent seulement des alternatives.
 
 ## Contours administratifs
 
@@ -140,14 +140,14 @@ communes <- communes |>
 
 ```
 
-Nous gardons seulement les colonnes contenant le nom de communes et les coordonnées géographique des contours de chaque commune.
+Nous gardons seulement les colonnes contenant le nom de communes et les coordonnées géographiques des contours de chaque commune.
 
 |                       |                      |
 |-----------------------|----------------------|
 | Nombre d'observations | `{r} nrow(communes)` |
 | Nombre de colonnes    | `{r} ncol(communes)` |
 
-La variable clé de cette base de données est la position géograohique `Coordonnées` des contours des communes, qui va nous permettre d'associer les restaurants recensés sur open street map à leur commune.
+La variable clé de cette base de données est la position géographique des contours des communes renseignée par la variable `Coordonnées`, qui va nous permettre d'associer les restaurants recensés sur Open Street Map à leur commune.
 
 ## Comparateur de territoires
 
@@ -203,7 +203,7 @@ Nous nous intéressons aux variables suivantes :
 - `Superficie`, mesurée en km²
 - `Population`, qui représente la taille de la population en nombre d'habitants
 - `Population 15-64 ans`, qui représente la part de cette population étant âgée entre 15 et 64 ans
-- `Niveau de vie médian`, mesuré en euros par ans
+- `Niveau de vie médian`, mesuré en euros par an
 - `Taux de pauvreté`, mesuré en pourcentage au seuil de 60 % de la médiane du niveau de vie
 - `Logements`, qui représente le nombre de logements au global dans la commune
 - `Résidences secondaires`, qui représente le nombre de résidences secondaires et de logements occasionnels, compris dans le nombre de logements.
@@ -212,17 +212,17 @@ Concernant les observations sélectionnées, 14 ont un statut "W", ce qui signif
 
 |                       |                             |
 |-----------------------|-----------------------------|
-| Nombre de lignes avant traitement | `{r} nrow(comparateur_brut)` |
-| Nombre de colonnes avant traitement  | `{r} ncol(comparateur_brut)` |
+| Nombre de lignes avant nettoyage | `{r} nrow(comparateur_brut)` |
+| Nombre de colonnes avant nettoyage  | `{r} ncol(comparateur_brut)` |
 | Nombre d'observations gardées | `{r} nrow(comparateur_net)` |
 | Nombre de variables gardées       | `{r} ncol(comparateur_net)` |
 
-Par ailleurs, la base contenant les métadonnées, une fois traitée dans la base `nom_communes`, nous donne le `Nom` de commune ou d'arrondissement correspondant à chaque code géographique.
+Par ailleurs, la base contenant les métadonnées, une fois traitée dans la base `nom_communes`, nous donne le `Nom` de la commune ou de l'arrondissement correspondant à chaque code géographique.
 
 |                       |                          |
 |-----------------------|--------------------------|
 | Nombre d'observations | `{r} nrow(nom_communes)` |
-| Nombre de variables avant traitement  | `{r} ncol(comparateur_meta)` |
+| Nombre de variables avant nettoyage  | `{r} ncol(comparateur_meta)` |
 | Nombre de variables gardées    | `{r} ncol(nom_communes)` |
 
 On peut joindre ces deux bases de données afin d'ajouter le nom de chaque commune aux autres caractéristiques renseignées.
@@ -315,12 +315,12 @@ résultats_votes <- résultats_votes_brut |>
 
 Avec les chiffres de data.gouv sur les élections européennes de 2024, nous avons les scores de chaque parti politique dans toutes les communes de France.
 
-Nous nous intéressons seulement au vote écologiste, représenté par le vote pour le parti "Europe Écologie". Nous extrayons donc seulement les observations concernant ce parti (liste 6 sur la base).
+Nous nous intéressons seulement au vote écologiste, représenté par le vote pour le parti "Europe Écologie". Nous extrayons donc uniquement les observations concernant ce parti (liste 6 sur la base).
 
 Les variables d'intérêt sont : 
 
 - `Votes écolo` qui comptabilise le nombre de voix pour le parti "Europe Écologie" dans chaque commune
-- `% Votes écolo/inscrits` qui calcule en pourcentage la part des voix pour le parti "Europe Écologie" dans les citoyens inscrits pour les élections
+- `% Votes écolo/inscrits` qui calcule en pourcentage la part des voix pour le parti "Europe Écologie" dans les citoyens inscrits pour les élections pour chaque commune
 
 Nous gardons également les variables d'identification `Code` et `Nom` pour chaque commune.
 
@@ -333,12 +333,11 @@ Nous gardons également les variables d'identification `Code` et `Nom` pour chaq
 
 # 4 Jointure des bases de données
 
-## Correspondance entre les restaurants Open Street Map et leur commune
+## Correspondance entre les restaurants et les communes
 
-D'abord, nous faisons rattachons chaque restaurant à sa commune grâce à ses coordonnées géographiques.
+D'abord, nous rattachons chaque restaurant à sa commune grâce à ses coordonnées géographiques.
 
 ```{r}
-#| message: false
 communes <- communes |> st_transform(2154)
 restos   <- restos   |> st_transform(2154) # harmonisation des bases dans un même système de coordonnées
 
@@ -361,7 +360,7 @@ restos_com <- restos_com |>
 ```
 
 
-Ensuite, nous comptons le nombre de restaurants proposant des alternatives végétariennes, proposant des alternatives véganes, étant exclusivement végétarien et étant exclusivement végan. Nous réalisons le comptage par code et non par commune car certaine commune ont le même nom.
+Ensuite, nous comptons le nombre de restaurants proposant des alternatives végétariennes, proposant des alternatives véganes, étant exclusivement végétariens et étant exclusivement végans. Nous réalisons le comptage par code et non par commune car certaines communes ont le même nom.
 
 ```{r}
 #| message: false
@@ -382,7 +381,7 @@ nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(Code)) |>
 
 ## Correspondance entre toutes les caractéristiques socio-démographiques et politique de la population
 
-Nous faisons la jointure des bases de données `comparateur_final` et `diplomes` afin d'avoir toutes les caractéristiques socio-démographiques de la population en une seule base : `caractéristiques_pop`. Pour cela, nous utilisons la variable `Code` présente dans le deux bases, qui donne un code géographique unique à chaque commune.
+Nous faisons la jointure des bases de données `comparateur_final` et `diplomes` afin d'avoir toutes les caractéristiques socio-démographiques de la population en une seule base : `caractéristiques_pop`. Pour cela, nous utilisons la variable `Code` présente dans le deux bases, qui donne un code géographique unique à chaque commune ou arrondissement.
 
 ```{r}
 caractéristiques_pop <- left_join(comparateur_final, diplomes, by = join_by(`Code`))
@@ -418,10 +417,9 @@ C'est une limite de notre étude, en effet les données sur OpenStreet Map sont 
 
 ## Création de variables
 
-Nous ajoutons également une variable `Densité`, calculée comme le rapport entre la population totale et la superficie de la commune (en habitants par km²), pour tenir compte du niveau d’urbanisation. Nous nous attendons à ce que les communes plus denses possèdent une offre de restauration plus importante. Cette variable va servir de variable de contrôle dans l’analyse car elle est liée à la fois à l’offre de restauration et aux caractéristiques socio-démographiques (âge, diplôme).
+Nous ajoutons enfin une variable `Densité`, calculée comme le rapport entre la population totale et la superficie de la commune (en habitants par km²), pour tenir compte du niveau d’urbanisation par commune. Nous nous attendons à ce que les communes plus denses possèdent une offre de restauration plus importante. Cette variable va servir de variable de contrôle dans l’analyse car elle est liée à la fois à l’offre de restauration et aux caractéristiques socio-démographiques (âge, diplôme).
 
 ```{r}
 base <- base |> 
   mutate(Densité= Population/Superficie)
 ```
-
