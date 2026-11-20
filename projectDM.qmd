@@ -107,7 +107,7 @@ restos <- restos_brut |>
   select(`name`,`amenity`,`diet.vegan`,`diet.vegetarian`,`geometry`)
 
 restos <- restos |> 
-  rename(Nom=`name`, "Type des restaurants"=`amenity`,Vegan = `diet.vegan`, Vegetarien=`diet.vegetarian`, Coordonnées=`geometry`)
+  rename(Restaurant=`name`, "Type des restaurants"=`amenity`,Vegan = `diet.vegan`, Vegetarien=`diet.vegetarian`, Coordonnées=`geometry`)
 
 ```
 
@@ -200,7 +200,7 @@ Pour chaque variable mesurée dans chaque commune, nous ne gardons que l'observa
 Nous nous intéressons aux variables suivantes :
 
 - `Code`, unique pour chaque commune ou arrondissement et qui permettra de les identifier au moment de la jointure des bases de données
-- `Superficie`, mesurée en km2
+- `Superficie`, mesurée en km²
 - `Population`, qui représente la taille de la population en nombre d'habitants
 - `Population 15-64 ans`, qui représente la part de cette population étant âgée entre 15 et 64 ans
 - `Niveau de vie médian`, mesuré en euros par ans
@@ -377,7 +377,7 @@ nb_resto <- restos_com |>
   )
 
 nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(Code)) |> 
-  select(`Code`,`Commune`,`n_total`,`vege_options`,`vege_only`,`vegan_options`,`vegan_only`)
+  select(`Code`,`Nom`,`n_total`,`vege_options`,`vege_only`,`vegan_options`,`vegan_only`)
 ```
 
 ## Correspondance entre toutes les caractéristiques socio-démographiques et politique de la population
