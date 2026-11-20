@@ -133,14 +133,15 @@ Ces 2 dernières variables nous permettront de faire des comparaison entre les r
 #| output: false
 communes_brut <- st_read(here("contours_communes.geojson"))
 communes <- communes_brut |> 
-  select(`nom`,`geometry`,`code`)
+  select(`nom`,`geometry`,`code`) |> 
+  filter_out(startsWith(code,"97") | startsWith(code,"98"))
 
 communes <- communes |> 
   rename(Nom=`nom`, Coordonnées=`geometry`,Code=`code`)
 
 ```
 
-Nous gardons seulement les colonnes contenant le nom de communes et les coordonnées géographiques des contours de chaque commune.
+Nous gardons seulement les colonnes contenant le nom de communes et les coordonnées géographiques des contours de chaque commune. Concernant les observations, nous sélectionnons exclusivement les observations de France métropolitaine.
 
 |                       |                      |
 |-----------------------|----------------------|
