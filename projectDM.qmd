@@ -393,6 +393,12 @@ Au moment de la jointure, 8 communes de la base `comparateur_final` n'ont pas tr
 Nous ajoutons maintenant la base `résultats_votes`. Celle-ci n'a pas le détail des résultats par arrondissement municipal à Paris, Marseille et Lyon, c'est pourquoi nous effectuons une jointure par la gauche afin de tout de même conserver pour ces zones géographiques les observations des caractéristiques socio-démographiques.
 
 ```{r}
-caractéristiques_pop <- left_join(caractéristiques_pop, résultats_votes, by = join_by(Code))
+résultats_pour_joindre <- résultats_votes |> 
+  select(!Nom)
+```
+
+
+```{r}
+caractéristiques_pop_final <- left_join(caractéristiques_pop, résultats_pour_joindre, by = join_by(Code))
 ```
 
