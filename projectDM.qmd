@@ -310,7 +310,7 @@ résultats_votes_brut <- read_excel(here("data","resultats-definitifs-par-commun
 ```{r}
 résultats_votes <- résultats_votes_brut |> 
   select(`Code commune`,`Libellé commune`,`Voix 6`,`% Voix/inscrits 6`) |> 
-  rename(Code = "Code commune", Nom = "Libellé commune", Voix = "Voix 6", `% Voix/inscrits` = "% Voix/inscrits 6")
+  rename(Code = "Code commune", Nom = "Libellé commune", `Votes écolo` = "Voix 6", `% Votes écolo/inscrits` = "% Voix/inscrits 6")
 ```
 
 Avec les chiffres de data.gouv sur les élections européennes de 2024, nous avons les scores de chaque parti politique dans toutes les communes de France.
@@ -319,8 +319,8 @@ Nous nous intéressons seulement au vote écologiste, représenté par le vote p
 
 Les variables d'intérêt sont : 
 
-- `Voix` qui comptabilise le nombre de voix pour le parti "Europe Écologie" dans chaque commune
-- `% Voix/inscrits` qui calcule en pourcentage la part des voix pour le parti "Europe Écologie" dans les citoyens inscrits pour les élections
+- `Votes écolo` qui comptabilise le nombre de voix pour le parti "Europe Écologie" dans chaque commune
+- `% Votes écolo/inscrits` qui calcule en pourcentage la part des voix pour le parti "Europe Écologie" dans les citoyens inscrits pour les élections
 
 Nous gardons également les variables d'identification `Code` et `Nom` pour chaque commune.
 
@@ -380,12 +380,19 @@ nb_resto <- inner_join(nb_resto,st_drop_geometry(communes),by=join_by(Code)) |>
   select(`Code`,`Commune`,`n_total`,`vege_options`,`vege_only`,`vegan_options`,`vegan_only`)
 ```
 
-## Correspondance entre toutes les caractéristiques socio-démographiques de la population
+## Correspondance entre toutes les caractéristiques socio-démographiques et politique de la population
 
-Nous faisons la jointure des bases de données `comparateur_final` et `diplomes` afin d'avoir toutes les caractéristiques socio-démographiques de la population en une seule base : `caractéristiques_pop`. Pour cela, nous utilisons la variable `Code géographique` présente dans le deux bases, qui donne un code unique à chaque commune.
+Nous faisons la jointure des bases de données `comparateur_final` et `diplomes` afin d'avoir toutes les caractéristiques socio-démographiques de la population en une seule base : `caractéristiques_pop`. Pour cela, nous utilisons la variable `Code` présente dans le deux bases, qui donne un code géographique unique à chaque commune.
 
 ```{r}
 caractéristiques_pop <- inner_join(comparateur_final, diplomes, by = join_by(`Code`))
 ```
 
 Au moment de la jointure, 8 communes de la base `comparateur_final` n'ont pas trouvé d'équivalent dans la base `diplomes`, nous décidons donc de les ignorer.
+
+Nous ajoutons maintenant la base `résultats_votes`. Celle-ci n'a pas le détail des résultats par arrondissement municipal à Paris, Marseille et Lyon, c'est pourquoi nous effectuons une jointure par la gauche afin de tout de même conserver pour ces zones géographiques les observations des caractéristiques socio-démographiques.
+
+```{r}
+caractéristiques_pop <- left_join(caractéristiques_pop, résultats_votes, by = join_by(Code))
+```
+
