@@ -192,7 +192,7 @@ nom_communes <- comparateur_meta |>
   rename(`Code géographique`=COD_MOD, Nom=LIB_MOD)
 ```
 
-Pour le nettoyage de la base, nous choisissons de garder seulement les observations qui nous intéressent : nous sélectionnons les communes de France métropolitaine, ainsi que les arrondissements municipaux de Paris, Marseille et Lyon.
+Pour le nettoyage de la base, nous choisissons de garder seulement les observations qui nous intéressent : nous sélectionnons les communes de France métropolitaine, ainsi que les arrondissements municipaux de Paris, Marseille et Lyon (nous ne gardons pas les données agrégées pour ces villes, seulement les observations au niveau des arrondissements).
 
 Pour chaque variable mesurée dans chaque commune, nous ne gardons que l'observation la plus récente.
 
