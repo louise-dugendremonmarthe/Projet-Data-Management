@@ -19,6 +19,8 @@ library(ggplot2)
 here::i_am("Projet Data Management.Rproj")
 ```
 
+Lien vers github : https://github.com/louise-dugendremonmarthe/Projet-Data-Management.git
+
 # 1 Introduction
 
 **L’offre de restauration végétarienne et végane dépend-elle du profil socio-démographique et politique des communes françaises ?**
@@ -36,9 +38,6 @@ Notre analyse portera sur la France métropolitaine. Nous distinguerons les rest
 Nous étudierons deux groupes de facteurs. D’abord, les facteurs socio-démographiques et économiques, tels que l’âge, le niveau de diplôme, la taille de la population, le niveau de vie médian. En effet, nous supposons que les grandes villes, avec une population jeune, diplômée et aisée, possèdent une offre plus large qu’une commune rurale avec une population plus âgée.
 
 Ensuite, nous nous intéresserons aux facteurs politiques, avec les résultats électoraux de chaque commune, en utilisant les résultats des élections européennes du 9 juin 2024. Nous nous attendons à ce qu’une commune où le vote écologiste est plus élevé ait une offre de restauration végétarienne et végane plus importante, car cette population serait potentiellement plus sensible aux questions environnementales et donc potentiellement plus ouverte à ces régimes alimentaires.
-
-
-Lien vers github : https://github.com/louise-dugendremonmarthe/Projet-Data-Management.git
 
 # 2 Description des sources
 
