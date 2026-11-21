@@ -409,8 +409,7 @@ Enfin, nous joignons la base `caractéristiques_pop_final` regroupant les caract
 
 ### Base complète
 
-Nous effectuons une jointure par la gauche pour que les villes ne possédant pas de restaurants végetariens ou végans apparaissent quand même, puisque une absence d'offre est aussi révelateur et utile pour notre étude. 
-
+Nous effectuons une jointure par la gauche pour que les villes ne possédant pas de restaurants végetariens ou végans apparaissent quand même, puisqu'une absence d'offre est aussi révélatrice et utile pour notre étude. 
 
 ```{r}
 #| echo: false
@@ -427,7 +426,7 @@ base1 <- left_join(caractéristiques_pop_final,nb_resto,join_by(Code))|>
   select(!Coordonnées)
 ```
 
-Cette jointure génère de nombreuses valeurs manquantes "NA" pour les variables concernant la restauration végétarienne/végane. Car en effet notre base concernant la restauration contient `{r} nrow(nb_resto)` observations et nous avons `{r} nrow(caractéristiques_pop_final)` observations sur les communes. Nous remplaçons les valeurs non rensignées par des 0. 
+Cette jointure génère de nombreuses valeurs manquantes "NA" pour les variables concernant la restauration végétarienne/végane. Car en effet notre base concernant la restauration contient `{r} nrow(nb_resto)` observations et nous avons `{r} nrow(caractéristiques_pop_final)` observations sur les communes. Nous remplaçons les valeurs non renseignées par des 0. 
 
 Il est important de noter que l'absence de restaurants dans OpenStreetMap ne signifie pas nécessairement qu'il n'en existe aucun dans la réalité. Certaines communes, notamment rurales, peuvent être moins bien renseignées dans cette base collaborative.
 
@@ -443,11 +442,11 @@ base1 <- base1 |>
 
 Par conséquent, les nombreux zéros présents dans cette première base risquent d'influencer fortement les statistiques descriptives et les représentations graphiques. 
 
-C'est pourquoi nous créons également une base avec uniquement les communes ayant des restaurants végés/végans renseignés. Cela nous permet de faire une analyse sur l'ensemble des communes françaises et une autre plus spécifique sur les communes où ce type de restauration est établie et recensée. 
+C'est pourquoi nous créons également une base avec uniquement les communes ayant des restaurants végétariens/végans renseignés. Cela nous permet de faire une analyse sur l'ensemble des communes françaises et une autre plus spécifique sur les communes où ce type de restauration est établie et recensée. 
 
 ### Base restreinte 
 
-Pour faire la jointure, nous faisons une jointure par la droite, cela permet de conserver les communes uniquement les communes présentes dans `nb_resto`, celles qui possèdent des offres de restauration végés/végans.
+Pour faire la jointure, nous faisons une jointure par la droite, cela permet de conserver uniquement les communes présentes dans `nb_resto`, celles qui ont une offre de restauration végétarienne/végane.
 
 ```{r}
 base2<- right_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
