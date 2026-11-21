@@ -464,46 +464,47 @@ base2 <- base2 |>
 
 Afin d'obtenir un premier aperçu de la répartition géographique de l'offre de restauration végétarienne et végane, nous nous intéressons à trois dimensions centrales de notre étude : 
 
-- le nombre de restaurants proposant une offre végétarienne ou végane 
-- le vote écologiste 
+- le nombre de restaurants proposant une offre végétarienne ou végane, transformé ici en nombre de restaurants pour 10 000 habitants afin de rendre la comparaison plus honnête
 - le niveau de vie médian des communes
+- le vote écologiste 
 
 Nous réalisons ici une comparaison descriptive de ces indicateurs pour les cinq communes les plus peuplées de notre base de données.
 
+Le graphique ci-dessous compare le niveau de vie médian des cinq communes les plus peuplées. La couleur des barres indique le nombre de restaurants proposant une option végétarienne pour 10 000 habitants : plus le bleu est clair et plus le nombre de restaurants est élevé.
+
 ```{r}
 tab_graph <- base1 |> 
-  slice_max(Population,n=5)
+  slice_max(Population,n=5) |> 
+  mutate(Resto_10000 = vege_options / Population * 10000)
 ```
 
 ```{r}
 #| echo: false
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vegan_only))+
-  geom_col()
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vege_only))+
-  geom_col()
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vegan_options))+
-  geom_col()
+
 tab_graph |> 
   ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vege_options))+
   geom_col()
+
+tab_graph |> 
+  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=Resto_10000)) +
+  geom_col() +
+  labs(x = NULL, fill = "Restos option végé /10000 hab")
 ```
+
+Le deuxième graphique compare la part des inscrits ayant voté pour la liste écologiste aux européennes de 2024 dans les cinq communes les plus peuplées, avec la même échelle de couleur pour l'offre végétarienne.
 
 ```{r}
 #| echo: false
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vegan_only))+
-  geom_col()
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vege_only))+
-  geom_col()
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vegan_options))+
-  geom_col()
+
 tab_graph |> 
   ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vege_options))+
   geom_col()
+
+tab_graph |> 
+  ggplot(aes(x = Nom, y = `% Votes écolo/inscrits`, fill = Resto_10000)) +
+  geom_col() +
+  labs(x = NULL, 
+       y = "Votes écolo (% des inscrits)", 
+       fill = "Restos option végé /10000 hab")
 ```
 
