@@ -417,11 +417,6 @@ nb_resto <- nb_resto |> select(!Nom)
 ```
 
 ```{r}
-base_<- right_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
-  select(!Coordonnées) 
-```
-
-```{r}
 base1 <- left_join(caractéristiques_pop_final,nb_resto,join_by(Code))|> 
   select(!Coordonnées)
 ```
