@@ -480,26 +480,17 @@ tab_graph <- base1 |>
 
 ```{r}
 #| echo: false
-
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=vege_options))+
-  geom_col()
-
 tab_graph |> 
   ggplot(aes(x=Nom,y=`Niveau de vie médian`,fill=Resto_10000)) +
   geom_col() +
   labs(x = NULL, fill = "Restos option végé /10000 hab")
 ```
+On observe que plus le revenu médian tend à être élevé, plus il y a des options végétariennes.
 
 Le deuxième graphique compare la part des inscrits ayant voté pour la liste écologiste aux européennes de 2024 dans les cinq communes les plus peuplées, avec la même échelle de couleur pour l'offre végétarienne.
 
 ```{r}
 #| echo: false
-
-tab_graph |> 
-  ggplot(aes(x=Nom,y=`% Votes écolo/inscrits`,fill=vege_options))+
-  geom_col()
-
 tab_graph |> 
   ggplot(aes(x = Nom, y = `% Votes écolo/inscrits`, fill = Resto_10000)) +
   geom_col() +
@@ -508,3 +499,4 @@ tab_graph |>
        fill = "Restos option végé /10000 hab")
 ```
 
+On observe également une potentielle corrélation entre le vote écologiste et les options végétariennes. Plus une ville vote écologiste, plus elle a des restaurants proposant des alternatives végétariennes.
